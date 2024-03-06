@@ -9,8 +9,9 @@ protected:
     string ngaylapthe;  //dd/mm/yyyy
     int sothanghieuluc;
 public:
-    void Input();           // Phuong thuc nhap thong tin
-    void Output();          // Phuong thuc xuat thong tin
+    virtual void Input();           // Phuong thuc nhap thong tin
+    virtual void Output();          // Phuong thuc xuat thong tin
+    virtual int Tinh_Tien_Lam_The() = 0; 
     CDocGia();
     ~CDocGia();
 };
@@ -21,7 +22,7 @@ private:
 public:
     void Input();           // Phuong thuc nhap thong tin
     void Output();          // Phuong thuc xuat thong tin
-    int Tinh_Tien_Lam_The();
+    int Tinh_Tien_Lam_The(); 
     CDocGiaNguoiLon();
     ~CDocGiaNguoiLon();
 };
@@ -39,8 +40,7 @@ public:
 class CThuVien
 {
 private:
-    vector<CDocGiaTreEm*> ds_docgiatreem;
-    vector<CDocGiaNguoiLon*> ds_docgianguoilon;
+    vector<CDocGia*> ds_docgia; // Khai bao mang 1 chieu chua lop cha - vi do co virtual cho nen no se da hinh sang duoc tung lop con tuong ung
 public:
     void Input();           // Phuong thuc nhap thong tin
     void Output();          // Phuong thuc xuat thong tin
@@ -107,7 +107,7 @@ void CDocGiaNguoiLon::Input()
 void CDocGiaNguoiLon::Output()
 {
     CDocGia::Output();
-    cout<<"\nSo CMND"<<CMND;
+    cout<<"\nSo CMND: "<<CMND;
 
 }
 int CDocGiaNguoiLon::Tinh_Tien_Lam_The()
@@ -157,6 +157,7 @@ CThuVien::~CThuVien()
 void CThuVien::Input()
 {
     int luachon;
+    
     while(true)
     {
         cout << "\n\n\t\t================THU VIEN ====================";
@@ -167,20 +168,21 @@ void CThuVien::Input()
 
         cout << "\n\n\t\tNhap Lua Chon: ";
         cin >> luachon;
+        CDocGia *x;
         if(luachon == 1)
         {
             cout << "\n\n\t\t NHAP THONG TIN DOC GIA\n";
-            CDocGiaTreEm *x = new CDocGiaTreEm; 
+            x= new CDocGiaTreEm; 
             x -> Input();
-            ds_docgiatreem.push_back(x);
+            ds_docgia.push_back(x);
 
         }
         else if(luachon == 2)
         {
             cout << "\n\n\t\t NHAP THONG TIN DOC GIA\n";
-            CDocGiaNguoiLon *x = new CDocGiaNguoiLon; 
+            x = new CDocGiaNguoiLon; 
             x -> Input();
-            ds_docgianguoilon.push_back(x);
+            ds_docgia.push_back(x);
 
         }
         else if (luachon == 0)
@@ -197,35 +199,26 @@ void CThuVien::Input()
 
 void CThuVien::Output()
 {
-    for(int i=0; i< ds_docgiatreem.size(); i++)
+    for(int i=0; i< ds_docgia.size(); i++)
     {
-        cout << "\n\n\t\t ============ THONG TIN DOC GIA TRE EM ===============";
-        ds_docgiatreem[i]->Output();
-        pausesys();
+        cout << "\n\n\t\t THONG TIN DOC GIA THU "<<i+1;
+        ds_docgia[i]->Output();
+        
     }
+    pausesys();
 
-    for(int i=0; i< ds_docgianguoilon.size(); i++)
-    {
-        cout << "\n\n\t\t ============ THONG TIN DOC GIA NGUOI LON ===============";
-        ds_docgianguoilon[i]->Output();
-        pausesys();
-    }
+
 
 }
 int CThuVien::Tinh_Tien_Lam_The()
 {
     int sum = 0;
-    for(int i=0; i< ds_docgiatreem.size(); i++)
+    for(int i=0; i< ds_docgia.size(); i++)
     {
-        sum += ds_docgiatreem[i] ->Tinh_Tien_Lam_The();
+        sum += ds_docgia[i] ->Tinh_Tien_Lam_The();
         
     }
 
-    for(int i=0; i< ds_docgianguoilon.size(); i++)
-    {
-        sum += ds_docgianguoilon[i] ->Tinh_Tien_Lam_The();
-        
-    }
     return sum;
 }
 int main()
